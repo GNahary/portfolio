@@ -1,0 +1,14 @@
+@if(isLoading){
+<p>Loading...</p>
+
+} @else {
+<ng-container>
+    <h1 class="section-heading">Stock Trading App</h1>
+    <div class="centered-container">
+        <app-stock-chart [xValues]="this.data!!.tradeTimes" [yValues]="this.data!!.tradePrice"></app-stock-chart>
+        <div class="financial-info-section">
+            <div class="info-item">Current TSLA Share Price: {{this.data?.lastPrice}}</div>
+        </div>
+    </div>
+</ng-container>
+}

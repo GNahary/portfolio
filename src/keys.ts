@@ -1,1 +1,1 @@
-export const ALPHA_KEY = 'XXXXXXXXXXXXXXXXXXXXx'; // Your key here
+export const ALPHA_KEY = 'XXXXXXXXXXXXXXXXXXXX'; // Your key here

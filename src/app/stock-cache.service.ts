@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StockTradeService } from './stock-trade.service';
 import { TradeData } from '../types';
-import { Observable, switchMap, of } from 'rxjs';
+import { Observable, switchMap, of, concatMap } from 'rxjs';
 
 
 @Injectable({
@@ -19,7 +19,7 @@ export class StockCacheService {
       return of(tradeData);
     } else {
       return this.stockTradeService.loadTradingData(stock).pipe(
-        switchMap((returnedData: TradeData) => {
+        concatMap((returnedData: TradeData) => {
           sessionStorage.setItem(`tradeData_${stock}`, JSON.stringify(returnedData));
           return of(returnedData);
         })

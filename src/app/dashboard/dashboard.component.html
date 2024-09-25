@@ -1,13 +1,11 @@
 <ng-container>
     <h1 class="section-heading">Stock Trading App</h1>
-    <input type="text" placeholder="Search for stock" (keyup.enter)="searchForStock(stockSymbolQuery.value)"
-        #stockSymbolQuery>
-    <button class="primary" type="button" (click)="searchForStock(stockSymbolQuery.value)">Search</button>
+    <input type="text" placeholder="Search for stock" #stockSymbolQuery1>
+    <input type="text" placeholder="Search for stock" #stockSymbolQuery2>
+    <button class="primary" type="button"
+        (click)="searchForStock(stockSymbolQuery1.value, stockSymbolQuery2.value)">Search</button>
     <div class="centered-container">
         <app-stock-chart [xValues]="this.data!!.tradeTimes" [yValues]="this.data!!.tradePrice"
-            [graphSymbol]="stockSymbolQuery.value"></app-stock-chart>
-        <div class="financial-info-section">
-            <div class="info-item">Current {{stockSymbolQuery.value}} Share Price: {{this.data?.lastPrice}}</div>
-        </div>
+            [graphSymbol]="stockSymbolQuery1.value"></app-stock-chart>
     </div>
 </ng-container>

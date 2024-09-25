@@ -15,15 +15,13 @@ export class StockTradeService {
 
   loadTradingData(stockSymbol: String): Observable<TradeData> {
 
-    const apiUrl = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY'
+    const apiUrl = 'https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY'
       + `&symbol=${stockSymbol}`
-      + '&interval=30min'
-      + '&outputsize=full'
       + `&apikey=${ALPHA_KEY}`;
 
     return this.http.get<any>(apiUrl).pipe(
       map((response) => {
-        const timeSeries = response['Time Series (30min)'];
+        const timeSeries = response['Weekly Time Series'];
 
         // Extract trade times (keys) and trade prices ("4. close" values)
         const tradeTimes = Object.keys(timeSeries);

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { StockTradeService } from '../stock-trade.service';
 import { TradeData } from '../../types';
 import { StockChartComponent } from "../stock-chart/stock-chart.component";
+import { StockCacheService } from '../stock-cache.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,15 +12,14 @@ import { StockChartComponent } from "../stock-chart/stock-chart.component";
 })
 export class DashboardComponent implements OnInit {
 
-
+  stockSymbol = 'TSLA';
   data: TradeData | null = null;
   isLoading: boolean = false;
 
-  constructor(private stockTradeService: StockTradeService) { }
+  constructor(private stockCacheService: StockCacheService) { }
 
   ngOnInit(): void {
-    this.stockTradeService.loadTradingData("TSLA").subscribe((returnedData: TradeData) => this.data = returnedData);
-    console.log(this.data);
+    this.stockCacheService.loadDataFromCache(this.stockSymbol).subscribe(returnedData => this.data = returnedData);
   }
 
 }

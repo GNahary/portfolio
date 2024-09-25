@@ -27,6 +27,11 @@ export class StockChartComponent {
 
   };
 
+  @Input()
+  set graphSymbol(symbol: string) {
+    this.graph.layout.title = `${symbol} Stock History`;
+  }
+
   graph = {
     data: [
       {
@@ -40,7 +45,7 @@ export class StockChartComponent {
     layout: {
       width: 900,
       height: 400,
-      title: 'TSLA Stock History',
+      title: "",
     }
   }
 }

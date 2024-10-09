@@ -18,12 +18,10 @@ export class StockChartComponent {
   @Input()
   set xValues(values: string[]) {
     this.graph.data[0].x = values;
-    console.log("x values are: " + this.graph.data[0].x);
   };
   @Input()
   set yValues(values: number[]) {
     this.graph.data[0].y = values;
-    console.log("y values are: " + this.graph.data[0].y);
 
   };
 

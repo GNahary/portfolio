@@ -1,11 +1,52 @@
 <ng-container>
     <h1 class="section-heading">Stock Trading App</h1>
-    <input type="text" placeholder="Search for stock" #stockSymbolQuery1>
-    <input type="text" placeholder="Search for stock" #stockSymbolQuery2>
-    <button class="primary" type="button"
-        (click)="searchForStock(stockSymbolQuery1.value, stockSymbolQuery2.value)">Search</button>
+
+
+
+
+
+
+    <form [formGroup]="stocksForm" (ngSubmit)="calculatePortfolio()">
+        <table formArrayName="stocks">
+            <tr>
+                <th>Symbol</th>
+                <th>Quantity</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+
+
+            @for(stock of stocks().controls; track $index){
+            <tr [formGroupName]="$index">
+                <td>
+                    <input type="text" formControlName="symbol" placeholder="Symbol" class="form-control">
+                </td>
+                <td>
+                    <input type="text" formControlName="qty" placeholder="Quantity" class="form-control">
+                </td>
+                <td>
+                    <input type="text" formControlName="date" placeholder="Date" class="form-control">
+                </td>
+                <td>
+                    <button type="button" (click)="removeStock($index)" class="btn btn-danger">Remove</button>
+                </td>
+            </tr>
+
+            }
+
+        </table>
+
+        <button type="button" (click)="addStock()" class="btn btn-primary">Add Stock</button>
+
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+
+
+    @if(this.data){
     <div class="centered-container">
         <app-stock-chart [xValues]="this.data!!.tradeTimes" [yValues]="this.data!!.tradePrice"
-            [graphSymbol]="stockSymbolQuery1.value"></app-stock-chart>
+            [graphSymbol]="'Portfolio'"></app-stock-chart>
     </div>
+    }
+
 </ng-container>

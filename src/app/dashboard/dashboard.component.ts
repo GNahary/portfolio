@@ -50,6 +50,10 @@ export class DashboardComponent implements OnInit {
     this.calculatePortfolio();
   }
 
+  getStock(index: number): FormGroup {
+    return this.stocks().at(index) as FormGroup
+  }
+
 
   calculatePortfolio() {
     console.log(this.stocksForm.value);

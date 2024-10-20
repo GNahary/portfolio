@@ -1,11 +1,6 @@
 <ng-container>
     <h1 class="section-heading">Stock Trading App</h1>
 
-
-
-
-
-
     <form [formGroup]="stocksForm" (ngSubmit)="calculatePortfolio()">
         <table formArrayName="stocks">
             <tr>
@@ -17,7 +12,7 @@
 
 
             @for(stock of stocks().controls; track $index){
-            <tr [formGroupName]="$index">
+            <tr [formGroup]="getStock($index)">
                 <td>
                     <input type="text" formControlName="symbol" placeholder="Symbol" class="form-control">
                 </td>

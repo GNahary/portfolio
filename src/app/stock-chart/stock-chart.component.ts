@@ -18,6 +18,7 @@ export class StockChartComponent {
   @Input()
   set xValues(values: string[]) {
     this.graph.data[0].x = values;
+    console.log(`dates: ${values}`)
   };
   @Input()
   set yValues(values: number[]) {

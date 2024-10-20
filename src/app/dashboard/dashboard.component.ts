@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TradeData } from '../../types';
 import { StockChartComponent } from "../stock-chart/stock-chart.component";
 import { StockCacheService } from '../stock-cache.service';
-import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, FormArray } from '@angular/forms'
-
+import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, FormArray, AbstractControl } from '@angular/forms'
 
 
 @Component({
@@ -36,8 +35,9 @@ export class DashboardComponent implements OnInit {
   newStock(): FormGroup {
     return this.formBuilder.group({
       symbol: [''],
-      qty: [''],
-      date: ['']
+      qty: 1,
+      purchaseDate: [''],
+      sellDate: ['']
     })
   }
 
@@ -60,15 +60,44 @@ export class DashboardComponent implements OnInit {
     this.data = null;
 
     this.stocks().controls.forEach(stock => {
-      let stockSymbol: string = stock.get<string>("symbol")?.value;
-      console.log("Data for " + stockSymbol);
+      let stockSymbol: string = stock.get("symbol")?.value;
+
       this.stockCacheService.loadDataFromCache(stockSymbol).subscribe(returnedData => {
         console.log("Returned Data is " + returnedData!.lastPrice);
-        this.aggregateData(returnedData!);
-      });
+        let stockTradeData = this.calcStockValues(stock, returnedData);
+        this.aggregateData(stockTradeData!);
 
+      });
     });
 
+  }
+
+
+  private calcStockValues(stock: AbstractControl, data: TradeData): TradeData {
+
+    let stockUnits: number = stock.get("qty")?.value as number;
+    let stockPurchaseDate: string = stock.get<string>("purchaseDate")?.value;
+    let stockSellDate: string = stock.get<string>("sellDate")?.value;
+
+    let sellDateIndex = data.tradeTimes.findIndex((date: string) => date === stockSellDate);
+    if (sellDateIndex !== -1) {
+      data.tradeTimes.splice(0, sellDateIndex);
+      data.tradePrice.splice(0, sellDateIndex);
+    }
+
+    let purchaseDateIndex = data.tradeTimes.findIndex((date: string) => date === stockPurchaseDate);
+    if (purchaseDateIndex !== -1) {
+      data.tradeTimes.splice(purchaseDateIndex, data.tradeTimes.length - 1);
+      data.tradePrice.splice(purchaseDateIndex, data.tradeTimes.length - 1);
+    }
+
+    let factor = stockUnits > 1 ? stockUnits : 1;
+    console.log(`${data.stockSymbol} with a factor of ${factor}`);
+    for (let index = 0; index < data.tradePrice.length; index++) {
+      data.tradePrice[index] *= factor;
+    }
+
+    return data;
   }
 
 
@@ -77,13 +106,12 @@ export class DashboardComponent implements OnInit {
     console.log(" aggregateData for " + data.stockSymbol);
 
     if (!this.data) {
-      console.log(`Null Data, adding ${data.stockSymbol}`);
       this.data = data;
     } else {
 
       console.log(`Data consist of ${this.data.stockSymbol} with trade price of ${this.data?.tradePrice[0]}, adding ${data?.tradePrice[0]}`);
       for (let index = 0; index < data.tradePrice.length; index++) {
-        this.data.tradePrice[index] += data.tradePrice[index];
+        this.data.tradePrice[index] += (data.tradePrice[index]);
       }
 
       console.log(`Aggregated data is now ${this.data?.tradePrice[0]}`);

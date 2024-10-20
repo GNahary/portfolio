@@ -6,7 +6,8 @@
             <tr>
                 <th>Symbol</th>
                 <th>Quantity</th>
-                <th>Date</th>
+                <th>Purchase Date</th>
+                <th>Selling Date</th>
                 <th>Actions</th>
             </tr>
 
@@ -17,10 +18,13 @@
                     <input type="text" formControlName="symbol" placeholder="Symbol" class="form-control">
                 </td>
                 <td>
-                    <input type="text" formControlName="qty" placeholder="Quantity" class="form-control">
+                    <input type="number" formControlName="qty" placeholder="Quantity" class="form-control">
                 </td>
                 <td>
-                    <input type="text" formControlName="date" placeholder="Date" class="form-control">
+                    <input type="text" formControlName="purchaseDate" placeholder="(YYYY-MM-DD)" class="form-control">
+                </td>
+                <td>
+                    <input type="text" formControlName="sellDate" placeholder="(YYYY-MM-DD)" class="form-control">
                 </td>
                 <td>
                     <button type="button" (click)="removeStock($index)" class="btn btn-danger">Remove</button>

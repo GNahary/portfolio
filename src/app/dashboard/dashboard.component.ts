@@ -24,15 +24,14 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
 
   stocks(): FormArray {
     return this.stocksForm.get("stocks") as FormArray
   }
 
-
-  newStock(): FormGroup {
+  createNewStock(): FormGroup {
     return this.formBuilder.group({
       symbol: [''],
       qty: 1,
@@ -41,8 +40,8 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  addStock() {
-    this.stocks().push(this.newStock());
+  addNewStock() {
+    this.stocks().push(this.createNewStock());
   }
 
   removeStock(i: number) {
@@ -63,22 +62,27 @@ export class DashboardComponent implements OnInit {
       let stockSymbol: string = stock.get("symbol")?.value;
 
       this.stockCacheService.loadDataFromCache(stockSymbol).subscribe(returnedData => {
-        console.log("Returned Data is " + returnedData!.lastPrice);
-        let stockTradeData = this.calcStockValues(stock, returnedData);
+        let stockTradeData = this.calcStockPerformance(stock, returnedData);
         this.aggregateData(stockTradeData!);
 
       });
     });
-
   }
 
 
-  private calcStockValues(stock: AbstractControl, data: TradeData): TradeData {
+  private calcStockPerformance(stock: AbstractControl, data: TradeData): TradeData {
 
     let stockUnits: number = stock.get("qty")?.value as number;
     let stockPurchaseDate: string = stock.get<string>("purchaseDate")?.value;
     let stockSellDate: string = stock.get<string>("sellDate")?.value;
 
+    this.adjustHoldingPeriod(data, stockSellDate, stockPurchaseDate);
+    this.calcTotalHoldingValue(stockUnits, data);
+    return data;
+  }
+
+
+  private adjustHoldingPeriod(data: TradeData, stockSellDate: string, stockPurchaseDate: string) {
     let sellDateIndex = data.tradeTimes.findIndex((date: string) => date === stockSellDate);
     if (sellDateIndex !== -1) {
       data.tradeTimes.splice(0, sellDateIndex);
@@ -90,32 +94,91 @@ export class DashboardComponent implements OnInit {
       data.tradeTimes.splice(purchaseDateIndex, data.tradeTimes.length - 1);
       data.tradePrice.splice(purchaseDateIndex, data.tradeTimes.length - 1);
     }
+  }
 
+  private calcTotalHoldingValue(stockUnits: number, data: TradeData) {
     let factor = stockUnits > 1 ? stockUnits : 1;
-    console.log(`${data.stockSymbol} with a factor of ${factor}`);
     for (let index = 0; index < data.tradePrice.length; index++) {
       data.tradePrice[index] *= factor;
     }
-
-    return data;
   }
 
 
-  private aggregateData(data: TradeData) {
 
-    console.log(" aggregateData for " + data.stockSymbol);
+  private aggregateData(newStockData: TradeData) {
 
     if (!this.data) {
-      this.data = data;
+      this.data = newStockData;
     } else {
 
-      console.log(`Data consist of ${this.data.stockSymbol} with trade price of ${this.data?.tradePrice[0]}, adding ${data?.tradePrice[0]}`);
-      for (let index = 0; index < data.tradePrice.length; index++) {
-        this.data.tradePrice[index] += (data.tradePrice[index]);
-      }
+      const allDatesArray = this.createUnifiedDateRange(this.data, newStockData);
+      const aggregatedPrices: number[] = this.calculateNetWorthOverTime(this.data, newStockData, allDatesArray);
 
-      console.log(`Aggregated data is now ${this.data?.tradePrice[0]}`);
+      const aggregatedTradeData: TradeData = {
+        stockSymbol: `${this.data.stockSymbol} & ${newStockData.stockSymbol}`,
+        tradeTimes: allDatesArray,
+        tradePrice: aggregatedPrices,
+        lastPrice: aggregatedPrices[aggregatedPrices.length - 1], 
+      };
+
+      this.data = aggregatedTradeData;
     }
   }
+
+  private createUnifiedDateRange(data1: TradeData, data2: TradeData) {
+    let data1lastIndex = data1.tradeTimes.length - 1;
+    let data2lastIndex = data2.tradeTimes.length - 1;
+
+    const earliestDate = new Date(Math.min(
+      new Date(data1.tradeTimes[data1lastIndex]).getTime(),
+      new Date(data2.tradeTimes[data2lastIndex]).getTime()
+    ));
+
+    const latestDate = new Date(Math.max(
+      new Date(data1.tradeTimes[0]).getTime(),
+      new Date(data2.tradeTimes[0]).getTime()
+    ));
+
+    return this.generateDateRange(earliestDate, latestDate);
+  }
+
+
+  private generateDateRange(startDate: Date, endDate: Date): string[] {
+    const dateArray: string[] = [];
+    let currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      dateArray.push(currentDate.toISOString().split('T')[0]); // Format date as YYYY-MM-DD
+      currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+    }
+
+    return dateArray;
+  }
+
+
+  private calculateNetWorthOverTime(data1: TradeData, data2: TradeData, allDatesArray: string[]) {
+    const tradePriceMap1 = this.createPriceMap(data1.tradeTimes, data1.tradePrice);
+    const tradePriceMap2 = this.createPriceMap(data2.tradeTimes, data2.tradePrice);
+
+    const aggregatedPrices: number[] = [];
+
+    allDatesArray.forEach(date => {
+      const price1 = tradePriceMap1.get(date) || 0;
+      const price2 = tradePriceMap2.get(date) || 0;
+      aggregatedPrices.push(price1 + price2);
+    });
+
+    return aggregatedPrices;
+  }
+
+  private createPriceMap(dates: string[], prices: number[]): Map<string, number> {
+    const priceMap = new Map<string, number>();
+    for (let i = 0; i < dates.length; i++) {
+      priceMap.set(dates[i], prices[i]);
+    }
+    return priceMap;
+  }
+
+
 
 }

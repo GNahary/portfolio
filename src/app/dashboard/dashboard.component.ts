@@ -24,7 +24,10 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.createNewStock();
+    this.addNewStock();
+   }
 
 
   stocks(): FormArray {
@@ -34,7 +37,7 @@ export class DashboardComponent implements OnInit {
   createNewStock(): FormGroup {
     return this.formBuilder.group({
       symbol: [''],
-      qty: 1,
+      qty: undefined,
       purchaseDate: [''],
       sellDate: ['']
     })
@@ -83,24 +86,50 @@ export class DashboardComponent implements OnInit {
 
 
   private adjustHoldingPeriod(data: TradeData, stockSellDate: string, stockPurchaseDate: string) {
-    let sellDateIndex = data.tradeTimes.findIndex((date: string) => date === stockSellDate);
+
+
+    let sellDateIndex = data.tradeTimes.findIndex((date: string) => (date === stockSellDate || date <= stockSellDate));
     if (sellDateIndex !== -1) {
       data.tradeTimes.splice(0, sellDateIndex);
       data.tradePrice.splice(0, sellDateIndex);
     }
 
-    let purchaseDateIndex = data.tradeTimes.findIndex((date: string) => date === stockPurchaseDate);
+    let purchaseDateIndex = data.tradeTimes.findIndex((date: string) => (date === stockPurchaseDate || date <= stockPurchaseDate));
     if (purchaseDateIndex !== -1) {
       data.tradeTimes.splice(purchaseDateIndex, data.tradeTimes.length - 1);
       data.tradePrice.splice(purchaseDateIndex, data.tradeTimes.length - 1);
     }
   }
 
+
   private calcTotalHoldingValue(stockUnits: number, data: TradeData) {
+
+    let holdingStartDate = new Date(data.tradeTimes[data.tradeTimes.length - 1]);
+    let holdingEndDate = new Date(data.tradeTimes[0]);
+    let fullDateRange = this.generateDateRange(holdingStartDate, holdingEndDate).reverse();
+
+    let fullTradePriceRange: number[] = new Array<number>(fullDateRange.length);
+
+
     let factor = stockUnits > 1 ? stockUnits : 1;
+    let fullDateRangeIndex = 0;
     for (let index = 0; index < data.tradePrice.length; index++) {
-      data.tradePrice[index] *= factor;
+      let stockValue = data.tradePrice[index] * factor;
+      while (fullDateRangeIndex < fullDateRange.length) {
+        if (fullDateRange[fullDateRangeIndex] !== data.tradeTimes[index]) {
+          fullTradePriceRange[fullDateRangeIndex] = stockValue;
+          fullDateRangeIndex++;
+        } else {
+          break;
+        }
+      }
+
     }
+
+
+
+    data.tradePrice = fullTradePriceRange;
+    data.tradeTimes = fullDateRange;
   }
 
 
@@ -118,7 +147,7 @@ export class DashboardComponent implements OnInit {
         stockSymbol: `${this.data.stockSymbol} & ${newStockData.stockSymbol}`,
         tradeTimes: allDatesArray,
         tradePrice: aggregatedPrices,
-        lastPrice: aggregatedPrices[aggregatedPrices.length - 1], 
+        lastPrice: aggregatedPrices[aggregatedPrices.length - 1],
       };
 
       this.data = aggregatedTradeData;

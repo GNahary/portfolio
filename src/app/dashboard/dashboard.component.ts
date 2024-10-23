@@ -126,8 +126,6 @@ export class DashboardComponent implements OnInit {
 
     }
 
-
-
     data.tradePrice = fullTradePriceRange;
     data.tradeTimes = fullDateRange;
   }
@@ -174,9 +172,14 @@ export class DashboardComponent implements OnInit {
 
   private generateDateRange(startDate: Date, endDate: Date): string[] {
     const dateArray: string[] = [];
-    let currentDate = new Date(startDate);
+    let adaptedStartDate = startDate;
+    adaptedStartDate.setDate(adaptedStartDate.getDate() - 7);
+    let currentDate = new Date(adaptedStartDate);
 
-    while (currentDate <= endDate) {
+    let adaptedEndDate = endDate;
+    adaptedEndDate.setDate(adaptedEndDate.getDate() + 7);
+
+    while (currentDate <= adaptedEndDate) {
       dateArray.push(currentDate.toISOString().split('T')[0]); // Format date as YYYY-MM-DD
       currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
     }
@@ -207,7 +210,5 @@ export class DashboardComponent implements OnInit {
     }
     return priceMap;
   }
-
-
 
 }

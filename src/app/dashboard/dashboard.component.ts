@@ -64,11 +64,14 @@ export class DashboardComponent implements OnInit {
     this.stocks().controls.forEach(stock => {
       let stockSymbol: string = stock.get("symbol")?.value;
 
-      this.stockCacheService.loadDataFromCache(stockSymbol).subscribe(returnedData => {
+      this.stockCacheService.loadDataFromCache(stockSymbol).subscribe(
+        
+        returnedData => {
         let stockTradeData = this.calcStockPerformance(stock, returnedData);
         this.aggregateData(stockTradeData!);
-
-      });
+      },
+      err=>{alert(`Couldn't find data for ${stockSymbol}, please check validity of symbol`)}
+    );
     });
   }
 

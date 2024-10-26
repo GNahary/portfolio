@@ -8,7 +8,6 @@
                 <th>Quantity</th>
                 <th>Purchase Date</th>
                 <th>Selling Date</th>
-                <th>Actions</th>
             </tr>
 
 
@@ -27,7 +26,7 @@
                     <input type="text" formControlName="sellDate" placeholder="(YYYY-MM-DD)" class="form-control">
                 </td>
                 <td>
-                    <button type="button" (click)="removeStock($index)" class="btn btn-danger">Remove</button>
+                    <button type="button" (click)="removeStock($index)" class="fa-regular fa-trash-can"><fa-icon [icon]="faTrash"></fa-icon></button>
                 </td>
             </tr>
 

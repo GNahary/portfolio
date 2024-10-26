@@ -3,16 +3,21 @@ import { TradeData } from '../../types';
 import { StockChartComponent } from "../stock-chart/stock-chart.component";
 import { StockCacheService } from '../stock-cache.service';
 import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, FormArray, AbstractControl } from '@angular/forms'
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+
 
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [StockChartComponent, FormsModule, ReactiveFormsModule],
+  imports: [StockChartComponent, FormsModule, ReactiveFormsModule, FontAwesomeModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
+
+  faTrash = faTrashCan;
 
   data: TradeData | null = null;
   isLoading: boolean = false;
@@ -64,14 +69,18 @@ export class DashboardComponent implements OnInit {
     this.stocks().controls.forEach(stock => {
       let stockSymbol: string = stock.get("symbol")?.value;
 
-      this.stockCacheService.loadDataFromCache(stockSymbol).subscribe(
-        
-        returnedData => {
-        let stockTradeData = this.calcStockPerformance(stock, returnedData);
-        this.aggregateData(stockTradeData!);
-      },
-      err=>{alert(`Couldn't find data for ${stockSymbol}, please check validity of symbol`)}
-    );
+      if (stockSymbol) {
+        this.stockCacheService.loadDataFromCache(stockSymbol).subscribe(
+          
+          returnedData => {
+          let stockTradeData = this.calcStockPerformance(stock, returnedData);
+          this.aggregateData(stockTradeData!);
+        },
+        err=>{alert(`Couldn't find data for ${stockSymbol}, please check validity of symbol`)}
+      );
+  
+      }
+
     });
   }
 

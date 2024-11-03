@@ -1,0 +1,21 @@
+
+.fa-trash-can{
+    color: red;
+    background-color: white;
+    border:0ch;
+}
+
+
+.error-message {
+    font-size: 0.85em;
+    color: red;
+    width: 100%;
+    max-width: 70%;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+
+
+
+

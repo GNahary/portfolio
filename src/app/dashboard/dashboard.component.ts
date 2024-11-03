@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { TradeData } from '../../types';
 import { StockChartComponent } from "../stock-chart/stock-chart.component";
 import { StockCacheService } from '../stock-cache.service';
-import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, FormArray, AbstractControl } from '@angular/forms'
+import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, FormArray, AbstractControl, FormControl, Validators } from '@angular/forms'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -17,7 +17,7 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 })
 export class DashboardComponent implements OnInit {
 
-  faTrash = faTrashCan;
+  faTrash = faTrash;
 
   data: TradeData | null = null;
   isLoading: boolean = false;
@@ -41,8 +41,8 @@ export class DashboardComponent implements OnInit {
 
   createNewStock(): FormGroup {
     return this.formBuilder.group({
-      symbol: [''],
-      qty: undefined,
+      symbol: ['', [Validators.required, Validators.minLength(3)]],
+      qty: [undefined, [Validators.min(1)]],
       purchaseDate: [''],
       sellDate: ['']
     })

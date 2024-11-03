@@ -1,7 +1,7 @@
 <ng-container>
     <h1 class="section-heading">Stock Trading App</h1>
 
-    <form [formGroup]="stocksForm" (ngSubmit)="calculatePortfolio()">
+    <form class="stock-form" [formGroup]="stocksForm" (ngSubmit)="calculatePortfolio()">
         <table formArrayName="stocks">
             <tr>
                 <th>Symbol</th>
@@ -14,19 +14,38 @@
             @for(stock of stocks().controls; track $index){
             <tr [formGroup]="getStock($index)">
                 <td>
-                    <input type="text" formControlName="symbol" placeholder="Symbol" class="form-control">
+                        <input type="text" formControlName="symbol" placeholder="Symbol">
+                        @if(getStock($index).get('symbol')?.invalid && getStock($index).get('symbol')?.touched){
+                            <div class="error-message">
+                                @if(getStock($index).get('symbol')?.errors?.['minlength']){
+                                    <small>Symbol length must be at least 3 characters long.</small>
+                                }
+                                @if(getStock($index).get('symbol')?.errors?.['required']){
+                                    <small>Symbol is required.</small>
+                                }
+                        </div>
+                        }
+                   
                 </td>
                 <td>
-                    <input type="number" formControlName="qty" placeholder="1" class="form-control">
+                    <input type="number" formControlName="qty" placeholder="1">
+                    @if(getStock($index).get('qty')?.invalid && getStock($index).get('qty')?.touched){
+                        <div class="error-message">
+                            @if(getStock($index).get('qty')?.errors?.['min']){
+                                <small>Quantity must be greater than 1.</small>
+                            }
+                    </div>
+                    }
+  
                 </td>
                 <td>
-                    <input type="text" formControlName="purchaseDate" placeholder="(YYYY-MM-DD)" class="form-control">
+                    <input type="text" formControlName="purchaseDate" placeholder="(YYYY-MM-DD)" >
                 </td>
                 <td>
-                    <input type="text" formControlName="sellDate" placeholder="(YYYY-MM-DD)" class="form-control">
+                    <input type="text" formControlName="sellDate" placeholder="(YYYY-MM-DD)">
                 </td>
                 <td>
-                    <button type="button" (click)="removeStock($index)" class="fa-regular fa-trash-can"><fa-icon [icon]="faTrash"></fa-icon></button>
+                    <button type="button" (click)="removeStock($index)" class="fa-regular fa-trash-can" #submitButton><fa-icon [icon]="faTrash"></fa-icon></button>
                 </td>
             </tr>
 
@@ -36,7 +55,7 @@
 
         <button type="button" (click)="addNewStock()" class="btn btn-primary">Add Stock</button>
 
-        <button type="submit" class="btn btn-success">Submit</button>
+        <button type="submit" class="btn btn-success" [disabled]="stocksForm.invalid">Submit</button>
     </form>
 
 

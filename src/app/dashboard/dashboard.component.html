@@ -3,18 +3,11 @@
 
     <form class="stock-form" [formGroup]="stocksForm" (ngSubmit)="calculatePortfolio()">
         <table formArrayName="stocks">
-            <tr>
-                <th>Symbol</th>
-                <th>Quantity</th>
-                <th>Purchase Date</th>
-                <th>Selling Date</th>
-            </tr>
-
 
             @for(stock of stocks().controls; track $index){
             <tr [formGroup]="getStock($index)">
                 <td>
-                        <input type="text" formControlName="symbol" placeholder="Symbol">
+                        <input type="text" formControlName="symbol" placeholder="Symbol*">
                         @if(getStock($index).get('symbol')?.invalid && getStock($index).get('symbol')?.touched){
                             <div class="error-message">
                                 @if(getStock($index).get('symbol')?.errors?.['minlength']){
@@ -45,7 +38,7 @@
                     <input type="text" formControlName="sellDate" placeholder="(YYYY-MM-DD)">
                 </td>
                 <td>
-                    <button type="button" (click)="removeStock($index)" class="fa-regular fa-trash-can" #submitButton><fa-icon [icon]="faTrash"></fa-icon></button>
+                    <button type="button" (click)="removeStock($index)" class="fa-trash-can" #submitButton><fa-icon [icon]="faTrash"></fa-icon></button>
                 </td>
             </tr>
 
@@ -53,9 +46,8 @@
 
         </table>
 
-        <button type="button" (click)="addNewStock()" class="btn btn-primary">Add Stock</button>
-
-        <button type="submit" class="btn btn-success" [disabled]="stocksForm.invalid">Submit</button>
+        <button mat-raised-button color="primary" type="button" (click)="addNewStock()">Add Stock</button>
+        <button mat-raised-button color="primary" type="submit"  [disabled]="stocksForm.invalid">Submit</button>
     </form>
 
 

@@ -5,13 +5,14 @@ import { StockCacheService } from '../stock-cache.service';
 import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, FormArray, AbstractControl, FormControl, Validators } from '@angular/forms'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-
-
+import {MatInputModule} from '@angular/material/input';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [StockChartComponent, FormsModule, ReactiveFormsModule, FontAwesomeModule],
+  imports: [StockChartComponent, FormsModule, ReactiveFormsModule, FontAwesomeModule, MatInputModule, MatIconModule, MatButtonModule,],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

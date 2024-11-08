@@ -1,3 +1,56 @@
+#app-header {
+    align-self: flex-start;
+    padding: 10px;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    width: 100%;
+}
+
+#stocks {
+    width: 25%; 
+    max-height: 100%; 
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    padding: 10px;
+    box-sizing: border-box;
+    border-right: 1px solid #ccc; 
+}
+
+#graph-container {
+    width: 75%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+input{
+    margin-right: 0.5vw;
+    box-sizing: border-box; 
+}
+
+.symbol-input {
+    width: 4vw;
+    height: 3vh;  
+}
+
+.qty-input {
+    width: 3vw;
+    height: 3vh;  
+}
+
+.date-input {
+    width: 5vw;
+    height: 3vh;  
+}
+
 .fa-trash-can {
     color: white;
     background-color: #3f51b5;
@@ -6,7 +59,6 @@
     cursor: pointer;
     border-radius: 10px;
 }
-
 
 .error-message {
     font-size: 0.85em;

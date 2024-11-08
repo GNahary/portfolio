@@ -1,61 +1,71 @@
-<ng-container>
-    <h1 class="section-heading">Stock Trading App</h1>
+<ng-container >
+    <h1 id="app-header">Stock Trading App</h1>
 
-    <form class="stock-form" [formGroup]="stocksForm" (ngSubmit)="calculatePortfolio()">
-        <table formArrayName="stocks">
+    <div class="main-content">
 
-            @for(stock of stocks().controls; track $index){
-            <tr [formGroup]="getStock($index)">
-                <td>
-                        <input type="text" formControlName="symbol" placeholder="Symbol*">
-                        @if(getStock($index).get('symbol')?.invalid && getStock($index).get('symbol')?.touched){
+        <div id="stocks">
+            <h5>Insert the stock symbol (mandatory), quantity (optional, default is 1), and purchace/selling date (optional, default is the data limit as appears in the database)  </h5>
+
+            <form [formGroup]="stocksForm" (ngSubmit)="calculatePortfolio()">
+                <table formArrayName="stocks">
+    
+                    @for(stock of stocks().controls; track $index){
+                    <tr [formGroup]="getStock($index)">
+                        <td>
+                            <input class="symbol-input" type="text" formControlName="symbol" placeholder="Symbol*">
+                            @if(getStock($index).get('symbol')?.invalid && getStock($index).get('symbol')?.touched){
                             <div class="error-message">
                                 @if(getStock($index).get('symbol')?.errors?.['minlength']){
-                                    <small>Symbol length must be at least 3 characters long.</small>
+                                <small>Symbol length must be at least 3 characters long.</small>
                                 }
                                 @if(getStock($index).get('symbol')?.errors?.['required']){
-                                    <small>Symbol is required.</small>
+                                <small>Symbol is required.</small>
                                 }
-                        </div>
-                        }
-                   
-                </td>
-                <td>
-                    <input type="number" formControlName="qty" placeholder="1">
-                    @if(getStock($index).get('qty')?.invalid && getStock($index).get('qty')?.touched){
-                        <div class="error-message">
-                            @if(getStock($index).get('qty')?.errors?.['min']){
-                                <small>Quantity must be greater than 1.</small>
+                            </div>
                             }
-                    </div>
+    
+                        </td>
+                        <td>
+                            <input class="qty-input" type="number" formControlName="qty" placeholder="1">
+                            @if(getStock($index).get('qty')?.invalid && getStock($index).get('qty')?.touched){
+                            <div class="error-message">
+                                @if(getStock($index).get('qty')?.errors?.['min']){
+                                <small>Quantity must be greater than 1.</small>
+                                }
+                            </div>
+                            }
+    
+                        </td>
+                        <td>
+                            <input class="date-input" type="text" formControlName="purchaseDate" placeholder="(YYYY-MM-DD)">
+                        </td>
+                        <td>
+                            <input class="date-input" type="text" formControlName="sellDate" placeholder="(YYYY-MM-DD)">
+                        </td>
+                        <td>
+                            <button type="button" (click)="removeStock($index)" class="fa-trash-can" #submitButton><fa-icon
+                                    [icon]="faTrash"></fa-icon></button>
+                        </td>
+                    </tr>
+    
                     }
-  
-                </td>
-                <td>
-                    <input type="text" formControlName="purchaseDate" placeholder="(YYYY-MM-DD)" >
-                </td>
-                <td>
-                    <input type="text" formControlName="sellDate" placeholder="(YYYY-MM-DD)">
-                </td>
-                <td>
-                    <button type="button" (click)="removeStock($index)" class="fa-trash-can" #submitButton><fa-icon [icon]="faTrash"></fa-icon></button>
-                </td>
-            </tr>
-
+    
+                </table>
+    
+                <button mat-raised-button color="primary" type="button" (click)="addNewStock()">Add Stock</button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="stocksForm.invalid">Submit</button>
+            </form>
+        </div>
+    
+    
+        <div id="graph-container">
+            @if(this.data){
+            <div >
+                <app-stock-chart  [xValues]="this.data!!.tradeTimes" [yValues]="this.data!!.tradePrice"></app-stock-chart>
+            </div>
             }
-
-        </table>
-
-        <button mat-raised-button color="primary" type="button" (click)="addNewStock()">Add Stock</button>
-        <button mat-raised-button color="primary" type="submit"  [disabled]="stocksForm.invalid">Submit</button>
-    </form>
-
-
-    @if(this.data){
-    <div class="centered-container">
-        <app-stock-chart [xValues]="this.data!!.tradeTimes" [yValues]="this.data!!.tradePrice"
-            [graphSymbol]="'Portfolio'"></app-stock-chart>
+    
+        </div>
     </div>
-    }
-
 </ng-container>
+

@@ -24,6 +24,9 @@ export class DashboardComponent implements OnInit {
   isLoading: boolean = false;
   stocksForm: FormGroup;
 
+  totalAddedFunds:number = 0;
+  totalRetrievedFunds:number = 0;
+
   constructor(private stockCacheService: StockCacheService, private formBuilder: FormBuilder) {
     this.stocksForm = this.formBuilder.group({
       stocks: this.formBuilder.array([]),
@@ -94,6 +97,7 @@ export class DashboardComponent implements OnInit {
 
     this.adjustHoldingPeriod(data, stockSellDate, stockPurchaseDate);
     this.calcTotalHoldingValue(stockUnits, data);
+    this.aggregateOverallStockPerformance(stockUnits, data);
     return data;
   }
 
@@ -111,6 +115,22 @@ export class DashboardComponent implements OnInit {
     if (purchaseDateIndex !== -1) {
       data.tradeTimes.splice(purchaseDateIndex, data.tradeTimes.length - 1);
       data.tradePrice.splice(purchaseDateIndex, data.tradeTimes.length - 1);
+    }
+  }
+
+
+  private aggregateOverallStockPerformance(stockUnits: number, data: TradeData){
+    let factor = stockUnits > 1 ? stockUnits : 1;
+
+    this.totalRetrievedFunds += data.lastPrice * factor;
+
+    let addedFundsIndex = data.tradePrice.length -1;
+    for (; addedFundsIndex > 0; addedFundsIndex--) {
+      let tradePrice = data.tradePrice[addedFundsIndex];
+      if(tradePrice){
+        this.totalAddedFunds += tradePrice * factor;
+        break;
+      } 
     }
   }
 

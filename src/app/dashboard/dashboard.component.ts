@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { TradeData } from '../../types';
-import { StockChartComponent } from "../stock-chart/stock-chart.component";
 import { StockCacheService } from '../stock-cache.service';
-import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, FormArray, AbstractControl, FormControl, Validators } from '@angular/forms'
+import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, FormArray, AbstractControl, Validators } from '@angular/forms'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { ResultsComponent } from "../results/results.component";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [StockChartComponent, FormsModule, ReactiveFormsModule, FontAwesomeModule, MatInputModule, MatIconModule, MatButtonModule,],
+  imports: [FormsModule, ReactiveFormsModule, FontAwesomeModule, MatInputModule, MatIconModule, MatButtonModule, ResultsComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -90,6 +90,8 @@ export class DashboardComponent implements OnInit {
 
 
   private calcStockPerformance(stock: AbstractControl, data: TradeData): TradeData {
+    this.totalAddedFunds=0;
+    this.totalRetrievedFunds=0;
 
     let stockUnits: number = stock.get("qty")?.value as number;
     let stockPurchaseDate: string = stock.get<string>("purchaseDate")?.value;
@@ -123,12 +125,16 @@ export class DashboardComponent implements OnInit {
     let factor = stockUnits > 1 ? stockUnits : 1;
 
     this.totalRetrievedFunds += data.lastPrice * factor;
+    console.log(`${data.stockSymbol} adding ${data.lastPrice * factor} to retrieved funds`);
+    
 
     let addedFundsIndex = data.tradePrice.length -1;
     for (; addedFundsIndex > 0; addedFundsIndex--) {
       let tradePrice = data.tradePrice[addedFundsIndex];
       if(tradePrice){
         this.totalAddedFunds += tradePrice * factor;
+        console.log(`${data.stockSymbol} adding ${tradePrice * factor} to added funds`);
+
         break;
       } 
     }

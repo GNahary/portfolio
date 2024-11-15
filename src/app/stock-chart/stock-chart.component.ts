@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
-import { StatisticsComponent } from "../statistics/statistics.component";
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -10,7 +9,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
 @Component({
   selector: 'app-stock-chart',
   standalone: true,
-  imports: [PlotlyModule, StatisticsComponent],
+  imports: [PlotlyModule],
   templateUrl: './stock-chart.component.html',
   styleUrl: './stock-chart.component.css'
 })
@@ -25,10 +24,6 @@ export class StockChartComponent {
     this.graph.data[0].y = values;
 
   };
-
-  @Input() totalAddedFunds:number=0;
-  @Input() totalRetrievedFunds:number=0;
-
 
   graph = {
     data: [

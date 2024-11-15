@@ -61,11 +61,11 @@
         <div id="graph-container">
             @if(this.data){
             <div >
-                <app-stock-chart  
-                [xValues]="this.data!!.tradeTimes" 
-                [yValues]="this.data!!.tradePrice" 
+                <app-results  
+                [dates]="this.data!!.tradeTimes" 
+                [prices]="this.data!!.tradePrice" 
                 [totalAddedFunds]="this.totalAddedFunds"
-                [totalRetrievedFunds]="this.totalRetrievedFunds"></app-stock-chart>
+                [totalRetrievedFunds]="this.totalRetrievedFunds"></app-results>
             </div>
             }
     

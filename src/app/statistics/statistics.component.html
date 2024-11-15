@@ -1,5 +1,10 @@
 <div>
     <br>
     <br>
-    <h5>Profit: {{((this.totalRetrievedFunds/this.totalAddedFunds - 1)*100).toFixed(2)}}%</h5>
+    <h5>Profit: {{this.calcTotalPerformance().toFixed(2)}}%</h5>
+    <h5>Total Profit: {{this.totalRetrievedFunds-this.totalAddedFunds}}%</h5>
+    <h5>Hightest value: {{this.findHighestPrice()}}</h5>
+    <h5>Hightest value date: {{this.findHighestPriceDate()}}</h5>
+    <h5>Lowest value: {{this.findLowestPrice()}}</h5>
+    <h5>Lowest value date: {{this.findLowestPriceDate()}}</h5>
 </div>

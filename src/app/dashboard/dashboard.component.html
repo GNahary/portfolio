@@ -1,14 +1,15 @@
-<ng-container >
+<ng-container>
     <h1 id="app-header">Stock Trading App</h1>
 
     <div class="main-content">
 
         <div id="stocks">
-            <h5>Insert the stock symbol (mandatory), quantity (optional, default is 1), and purchace/selling date (optional, default is the data limit as appears in the database)  </h5>
+            <h5>Insert the stock symbol (mandatory), quantity (optional, default is 1), and purchace/selling date
+                (optional, default is the data limit as appears in the database) </h5>
 
             <form [formGroup]="stocksForm" (ngSubmit)="calculatePortfolio()">
                 <table formArrayName="stocks">
-    
+
                     @for(stock of stocks().controls; track $index){
                     <tr [formGroup]="getStock($index)">
                         <td>
@@ -23,7 +24,7 @@
                                 }
                             </div>
                             }
-    
+
                         </td>
                         <td>
                             <input class="qty-input" type="number" formControlName="qty" placeholder="1">
@@ -34,42 +35,45 @@
                                 }
                             </div>
                             }
-    
+
                         </td>
                         <td>
-                            <input class="date-input" type="text" formControlName="purchaseDate" placeholder="(YYYY-MM-DD)">
+                            <input class="date-input" type="text" formControlName="purchaseDate"
+                                placeholder="(YYYY-MM-DD)">
                         </td>
                         <td>
                             <input class="date-input" type="text" formControlName="sellDate" placeholder="(YYYY-MM-DD)">
                         </td>
                         <td>
-                            <button type="button" (click)="removeStock($index)" class="fa-trash-can" #submitButton><fa-icon
-                                    [icon]="faTrash"></fa-icon></button>
+                            <button type="button" (click)="removeStock($index)" class="fa-trash-can"
+                                #submitButton><fa-icon [icon]="faTrash"></fa-icon></button>
                         </td>
                     </tr>
-    
+
                     }
-    
+
                 </table>
-    
-                <button mat-raised-button color="primary" type="button" (click)="addNewStock()">Add Stock</button>
-                <button mat-raised-button color="primary" type="submit" [disabled]="stocksForm.invalid">Submit</button>
+
+                <div class="action-buttons-row">
+                    <button mat-raised-button color="primary" type="button" (click)="addNewStock()">Add Stock</button>
+                    <button mat-raised-button color="primary" type="submit"
+                        [disabled]="stocksForm.invalid">Submit</button>
+                </div>
+
             </form>
+
         </div>
-    
-    
-        <div id="graph-container">
+
+
+        <div id="results-container">
             @if(this.data){
-            <div >
-                <app-results  
-                [dates]="this.data!!.tradeTimes" 
-                [prices]="this.data!!.tradePrice" 
-                [totalAddedFunds]="this.totalAddedFunds"
-                [totalRetrievedFunds]="this.totalRetrievedFunds"></app-results>
+            <div>
+                <app-results [dates]="this.data!!.tradeTimes" [prices]="this.data!!.tradePrice"
+                    [totalAddedFunds]="this.totalAddedFunds"
+                    [totalRetrievedFunds]="this.totalRetrievedFunds"></app-results>
             </div>
             }
-    
+
         </div>
     </div>
 </ng-container>
-

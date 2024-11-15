@@ -1,0 +1,16 @@
+.full-component-center {
+    font-family: Arial, Helvetica, sans-serif;
+    display: grid;
+    place-items: center;   
+
+}
+
+
+.result-row {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    justify-content: center; 
+    align-items: center; 
+    gap: 10vw;   
+}

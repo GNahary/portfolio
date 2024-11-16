@@ -1,27 +1,73 @@
-# StockHistory
+# Portfolio Tracker Application
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.6.
+## Overview
 
-## Development server
+This project demonstrates the **frontend capabilities of Angular** through the implementation of a Portfolio Tracker application. It is designed to showcase modern development practices, reusable components, and effective integration of libraries and frameworks. The application is tailored to display dynamic stock market data, calculate key financial statistics, and visually present data using interactive charts.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+The primary goal of this project is to demonstrate proficiency in Angular for professional opportunities. It is structured to be clean, modular, and extendable, adhering to best practices that technical leads, developers, and recruiters will appreciate.
 
-## Code scaffolding
+---
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Features and Highlights
 
-## Build
+### Technologies and Libraries
+- **Angular 17**: Leveraging the latest features of Angular for robust frontend development.
+- **Plotly.js**: Interactive, high-performance charts to visualize stock market trends.
+- **Angular Material**: Modern and responsive UI components for enhanced user experience.
+- **Font Awesome**: Scalable vector icons and social logos for visual consistency.
+- **Standalone Components**: Modular design using Angular's standalone component architecture.
+- **Responsive Design**: Optimized layouts for various screen sizes using CSS Grid and Flexbox.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Key Functionalities
+1. **Dynamic Stock List**:
+   - Allows users to manage and view stocks with dynamic data inputs.
+   - Handles varying lengths of stock data efficiently.
 
-## Running unit tests
+2. **Interactive Charts**:
+   - Uses Plotly.js for real-time stock performance visualization.
+   - Implements scatter plots with line modes for a clear and detailed trend representation.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+3. **Financial Statistics**:
+   - Calculates performance metrics like profit percentage and total profit dynamically.
+   - Identifies the highest and lowest stock prices and their corresponding dates.
 
-## Running end-to-end tests
+4. **Component-Based Architecture**:
+   - Decoupled, reusable components such as:
+     - **Stock Chart Component**: Manages stock data visualization.
+     - **Statistics Component**: Performs financial computations and displays results.
+     - **Results Component**: Integrates and displays charts and statistics in a cohesive layout.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+5. **Input Binding and Change Detection**:
+   - Leverages Angular's two-way data binding to dynamically update charts and statistics based on user inputs.
 
-## Further help
+6. **Type Safety and Validation**:
+   - Implements TypeScript for robust type safety and reliable development.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+7. **Clean and Maintainable Code**:
+   - Modular folder structure for easy navigation and scalability.
+   - Comments and meaningful naming conventions for better code readability.
+
+---
+
+## Project Structure
+
+src/ ├── app/ │ ├── results/ │ │ ├── results.component.ts │ │ ├── results.component.html │ │ └── results.component.css │ ├── stock-chart/ │ │ ├── stock-chart.component.ts │ │ ├── stock-chart.component.html │ │ └── stock-chart.component.css │ ├── statistics/ │ │ ├── statistics.component.ts │ │ ├── statistics.component.html │ │ └── statistics.component.css ├── assets/ // Static assets such as images or external files ├── environments/ // Environment configurations for dev and prod
+
+
+---
+
+## How to Run
+
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   cd <repository-directory>
+2. **Install Dependencies: Ensure you have Node.js and Angular CLI installed. Then run**:
+npm install
+3. **Start the Development Server**:
+ng serve
+4. **Build for Production**:
+ng build --prod
+
+The output files will be available in the dist/ directory.
+

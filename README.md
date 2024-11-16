@@ -50,8 +50,25 @@ The primary goal of this project is to demonstrate proficiency in Angular for pr
 ---
 
 ## Project Structure
-
-src/ ├── app/ │ ├── results/ │ │ ├── results.component.ts │ │ ├── results.component.html │ │ └── results.component.css │ ├── stock-chart/ │ │ ├── stock-chart.component.ts │ │ ├── stock-chart.component.html │ │ └── stock-chart.component.css │ ├── statistics/ │ │ ├── statistics.component.ts │ │ ├── statistics.component.html │ │ └── statistics.component.css ├── assets/ // Static assets such as images or external files ├── environments/ // Environment configurations for dev and prod
+    src/
+    ├── app/
+    ├── dashboard/
+    │   │   ├── dashboard.component.ts
+    │   │   ├── dashboard.component.html
+    │   │   ├── dashboard.component.css
+    ├── results/
+    │   │   ├── results.component.ts
+    │   │   ├── results.component.html
+    │   │   ├── results.component.css
+    │   ├── stock-chart/
+    │   │   ├── stock-chart.component.ts
+    │   │   ├── stock-chart.component.html
+    │   │   ├── stock-chart.component.css
+    │   ├── statistics/
+    │   │   ├── statistics.component.ts
+    │   │   ├── statistics.component.html
+    │   │   ├── statistics.component.css
+    ...
 
 
 ---
@@ -63,11 +80,19 @@ src/ ├── app/ │ ├── results/ │ │ ├── results.component.t
    git clone <repository-url>
    cd <repository-directory>
 2. **Install Dependencies: Ensure you have Node.js and Angular CLI installed. Then run**:
-npm install
-3. **Start the Development Server**:
-ng serve
-4. **Build for Production**:
-ng build --prod
+    ```bash
+    npm install
+3. **Install Material: Ensure you have Node.js and Angular CLI installed. Then run**:
+    ```bash
+   ng add @angular/material
+4. **Install Font Awesome**:
+   Instructions can be found here: https://www.npmjs.com/package/@fortawesome/angular-fontawesome
+5. **Start the Development Server**:
+   ```bash
+   ng serve
+6. **Build for Production**:
+   ```bash
+   ng build --prod
 
 The output files will be available in the dist/ directory.
 

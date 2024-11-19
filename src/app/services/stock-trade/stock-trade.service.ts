@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { ALPHA_KEY } from '../keys';
-import { TradeData } from '../types';
+import { ALPHA_KEY } from '../../../keys';
+import { TradeData } from '../../../types';
+
 
 
 @Injectable({

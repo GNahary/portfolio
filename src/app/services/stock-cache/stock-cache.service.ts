@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { StockTradeService } from './stock-trade.service';
-import { TradeData } from '../types';
+import { TradeData } from '../../../types';
 import { Observable, of, concatMap } from 'rxjs';
+import { StockTradeService } from '../stock-trade/stock-trade.service';
 
 export interface CachedTradeData {
   cacheDate: Date,

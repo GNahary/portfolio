@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TradeData } from '../../types';
-import { StockCacheService } from '../stock-cache.service';
+import { StockCacheService } from '../services/stock-cache/stock-cache.service';
 import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, FormArray, AbstractControl, Validators } from '@angular/forms'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';

@@ -22,15 +22,12 @@ export class StockCacheService {
         const cachedTradeData: CachedTradeData = JSON.parse(cachedObject);
         cachedTradeData.cacheDate = new Date(cachedTradeData.cacheDate);
         if (cachedTradeData.cacheDate.getDate() <  this.getTodayAtMidnightUTC().getDate()) {
-          console.log(`Stale cache. Querying data for ${stock}.`);
           return this.loadData(stock);
         } else {
-          console.log(`Data for ${stock} already in cache`);
           return of(cachedTradeData.tradeData);
         }
         
       } else {
-        console.log(`Cache miss. Querying data for ${stock}.`);
         return this.loadData(stock);
       }
     }

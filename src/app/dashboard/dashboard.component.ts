@@ -7,12 +7,14 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-import { ResultsComponent } from "../results/results.component";
+import { PortfolioDataService } from '../services/portfolio-data/portfolio-data.service';
+import { StockChartComponent } from "../stock-chart/stock-chart.component";
+import { StatisticsComponent } from "../statistics/statistics.component";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, FontAwesomeModule, MatInputModule, MatIconModule, MatButtonModule, ResultsComponent],
+  imports: [FormsModule, ReactiveFormsModule, FontAwesomeModule, MatInputModule, MatIconModule, MatButtonModule, StockChartComponent, StatisticsComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -27,7 +29,7 @@ export class DashboardComponent implements OnInit {
   totalAddedFunds:number = 0;
   totalRetrievedFunds:number = 0;
 
-  constructor(private stockCacheService: StockCacheService, private formBuilder: FormBuilder) {
+  constructor(private stockCacheService: StockCacheService, private formBuilder: FormBuilder, private portfolioDataService:PortfolioDataService) {
     this.stocksForm = this.formBuilder.group({
       stocks: this.formBuilder.array([]),
     });
@@ -86,6 +88,8 @@ export class DashboardComponent implements OnInit {
       }
 
     });
+
+    this.portfolioDataService.updateTradeData(this.data!!);
   }
 
 
@@ -106,7 +110,6 @@ export class DashboardComponent implements OnInit {
 
   private adjustHoldingPeriod(data: TradeData, stockSellDate: string, stockPurchaseDate: string) {
 
-
     let sellDateIndex = data.tradeTimes.findIndex((date: string) => (date === stockSellDate || date <= stockSellDate));
     if (sellDateIndex !== -1) {
       data.tradeTimes.splice(0, sellDateIndex);
@@ -124,17 +127,13 @@ export class DashboardComponent implements OnInit {
   private aggregateOverallStockPerformance(stockUnits: number, data: TradeData){
     let factor = stockUnits > 1 ? stockUnits : 1;
 
-    this.totalRetrievedFunds += data.lastPrice * factor;
-    console.log(`${data.stockSymbol} adding ${data.lastPrice * factor} to retrieved funds`);
-    
+    this.totalRetrievedFunds += data.lastPrice * factor;    
 
     let addedFundsIndex = data.tradePrice.length -1;
     for (; addedFundsIndex > 0; addedFundsIndex--) {
       let tradePrice = data.tradePrice[addedFundsIndex];
       if(tradePrice){
         this.totalAddedFunds += tradePrice * factor;
-        console.log(`${data.stockSymbol} adding ${tradePrice * factor} to added funds`);
-
         break;
       } 
     }
@@ -143,30 +142,34 @@ export class DashboardComponent implements OnInit {
 
   private calcTotalHoldingValue(stockUnits: number, data: TradeData) {
 
-    let holdingStartDate = new Date(data.tradeTimes[data.tradeTimes.length - 1]);
+    let holdingStartDate = new Date(data.tradeTimes[data.tradeTimes.length - 1]);    
     let holdingEndDate = new Date(data.tradeTimes[0]);
     let fullDateRange = this.generateDateRange(holdingStartDate, holdingEndDate).reverse();
+
+    console.log("Date range start:" + fullDateRange[fullDateRange.length-1]);
+
 
     let fullTradePriceRange: number[] = new Array<number>(fullDateRange.length);
 
 
+    // There is a bug here!
     let factor = stockUnits > 1 ? stockUnits : 1;
     let fullDateRangeIndex = 0;
     for (let index = 0; index < data.tradePrice.length; index++) {
       let stockValue = data.tradePrice[index] * factor;
-      while (fullDateRangeIndex < fullDateRange.length) {
-        if (fullDateRange[fullDateRangeIndex] !== data.tradeTimes[index]) {
-          fullTradePriceRange[fullDateRangeIndex] = stockValue;
-          fullDateRangeIndex++;
-        } else {
-          break;
-        }
-      }
 
+      // fill with the right price
+      while(fullDateRange[fullDateRangeIndex] >= data.tradeTimes[index]){
+        fullTradePriceRange[fullDateRangeIndex] = stockValue;
+        fullDateRangeIndex++;
+      }
     }
 
     data.tradePrice = fullTradePriceRange;
     data.tradeTimes = fullDateRange;
+
+    console.log(`holding: ${data.tradeTimes[data.tradeTimes.length - 1]}: ${data.tradePrice[data.tradePrice.length - 1]}  ${data.tradePrice.length}`);
+    
   }
 
 
@@ -177,8 +180,8 @@ export class DashboardComponent implements OnInit {
       this.data = newStockData;
     } else {
 
-      const allDatesArray = this.createUnifiedDateRange(this.data, newStockData);
-      const aggregatedPrices: number[] = this.calculateNetWorthOverTime(this.data, newStockData, allDatesArray);
+      const allDatesArray = this.createUnifiedDateRange(newStockData);
+      const aggregatedPrices: number[] = this.calculateNetWorthOverTime(newStockData, allDatesArray);
 
       const aggregatedTradeData: TradeData = {
         stockSymbol: `${this.data.stockSymbol} & ${newStockData.stockSymbol}`,
@@ -191,20 +194,20 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  private createUnifiedDateRange(data1: TradeData, data2: TradeData) {
-    let data1lastIndex = data1.tradeTimes.length - 1;
-    let data2lastIndex = data2.tradeTimes.length - 1;
+  private createUnifiedDateRange(newStockData: TradeData) {
+    let currentDataLastIndex = this.data!.tradeTimes.length - 1;
+    let newDataLastIndex = newStockData.tradeTimes.length - 1;
 
     const earliestDate = new Date(Math.min(
-      new Date(data1.tradeTimes[data1lastIndex]).getTime(),
-      new Date(data2.tradeTimes[data2lastIndex]).getTime()
+      new Date(this.data!.tradeTimes[currentDataLastIndex]).getTime(),
+      new Date(newStockData.tradeTimes[newDataLastIndex]).getTime()
     ));
 
     const latestDate = new Date(Math.max(
-      new Date(data1.tradeTimes[0]).getTime(),
-      new Date(data2.tradeTimes[0]).getTime()
+      new Date(this.data!.tradeTimes[0]).getTime(),
+      new Date(newStockData.tradeTimes[0]).getTime()
     ));
-
+    
     return this.generateDateRange(earliestDate, latestDate);
   }
 
@@ -212,32 +215,44 @@ export class DashboardComponent implements OnInit {
   private generateDateRange(startDate: Date, endDate: Date): string[] {
     const dateArray: string[] = [];
     let adaptedStartDate = startDate;
-    adaptedStartDate.setDate(adaptedStartDate.getDate() - 7);
+    adaptedStartDate.setDate(adaptedStartDate.getDate());
     let currentDate = new Date(adaptedStartDate);
 
     let adaptedEndDate = endDate;
     adaptedEndDate.setDate(adaptedEndDate.getDate() + 7);
 
     while (currentDate <= adaptedEndDate) {
-      dateArray.push(currentDate.toISOString().split('T')[0]); // Format date as YYYY-MM-DD
-      currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+      dateArray.push(currentDate.toISOString().split('T')[0]); 
+      currentDate.setDate(currentDate.getDate() + 1); 
     }
-
+    
     return dateArray;
   }
 
 
-  private calculateNetWorthOverTime(data1: TradeData, data2: TradeData, allDatesArray: string[]) {
-    const tradePriceMap1 = this.createPriceMap(data1.tradeTimes, data1.tradePrice);
-    const tradePriceMap2 = this.createPriceMap(data2.tradeTimes, data2.tradePrice);
+  private calculateNetWorthOverTime(newStockData: TradeData, allDatesArray: string[]) {
+
+    console.log(`current start ${this.data!.tradeTimes[0]}`);
+    console.log(`added start ${newStockData.tradeTimes[0]}`);
+
+
+    const currentPriceMap = this.createPriceMap(this.data!.tradeTimes, this.data!.tradePrice);
+    const newStockPriceMap = this.createPriceMap(newStockData.tradeTimes, newStockData.tradePrice);
+
+    console.log(`current ${this.data!.tradePrice[0]}`);
+    console.log(`added ${newStockData.tradePrice[0]}`);
+    
 
     const aggregatedPrices: number[] = [];
 
     allDatesArray.forEach(date => {
-      const price1 = tradePriceMap1.get(date) || 0;
-      const price2 = tradePriceMap2.get(date) || 0;
+      const price1 = currentPriceMap.get(date) || 0;
+      const price2 = newStockPriceMap.get(date) || 0;
       aggregatedPrices.push(price1 + price2);
     });
+
+    console.log(` After aggregatedPrices ${aggregatedPrices[0]}`);
+    
 
     return aggregatedPrices;
   }

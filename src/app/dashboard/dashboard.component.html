@@ -67,11 +67,11 @@
 
         <div id="results-container">
             @if(this.data){
-            <div>
-                <app-results [dates]="this.data!!.tradeTimes" [prices]="this.data!!.tradePrice"
-                    [totalAddedFunds]="this.totalAddedFunds"
-                    [totalRetrievedFunds]="this.totalRetrievedFunds"></app-results>
-            </div>
+                <app-stock-chart></app-stock-chart>
+
+                <app-statistics [totalAddedFunds]="this.totalAddedFunds"
+                [totalRetrievedFunds]="this.totalRetrievedFunds"></app-statistics>
+
             }
 
         </div>

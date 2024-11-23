@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
+import { TradeData } from '../../types';
+import { PortfolioDataService } from '../services/portfolio-data/portfolio-data.service';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -13,23 +15,32 @@ PlotlyModule.plotlyjs = PlotlyJS;
   templateUrl: './stock-chart.component.html',
   styleUrl: './stock-chart.component.css'
 })
-export class StockChartComponent {
+export class StockChartComponent implements OnInit{
 
-  @Input()
-  set xValues(values: string[]) {
-    this.graph.data[0].x = values;
-  };
-  @Input()
-  set yValues(values: number[]) {
-    this.graph.data[0].y = values;
+  private graphData: TradeData|null = null;
 
-  };
+
+  constructor(private portfolioDataService:PortfolioDataService){}
+
+  ngOnInit(): void {
+    this.portfolioDataService.tradeData$.subscribe(data => {
+      if (data) {
+        this.graphData = data;
+        this.updateGraph();
+      }
+    });
+  }
+
+  updateGraph() {
+    this.graph.data[0].x = this.graphData?.tradeTimes;
+    this.graph.data[0].y = this.graphData?.tradePrice;
+  }
 
   graph = {
     data: [
       {
-        x: this.xValues,
-        y: this.yValues,
+        x: this.graphData?.tradeTimes,
+        y: this.graphData?.tradePrice,
         type: 'scatter',
         mode: 'lines',
         marker: { color: 'green' },

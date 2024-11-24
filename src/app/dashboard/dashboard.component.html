@@ -1,9 +1,9 @@
 <ng-container>
-    <h1 id="app-header">Portfolio Tracker</h1>
+    <h1 class="dashboard-header">Portfolio Tracker</h1>
 
     <div class="main-content">
 
-        <div id="stocks">
+        <div class="stocks-form-section">
             <h5>Insert the stock symbol (mandatory), quantity (optional, default is 1), and purchace/selling date
                 (optional, default is the data limit as appears in the database) </h5>
 
@@ -64,7 +64,7 @@
         </div>
 
 
-        <div id="results-container">
+        <div id="results-section">
             @if(this.data){
             <app-stock-chart></app-stock-chart>
 

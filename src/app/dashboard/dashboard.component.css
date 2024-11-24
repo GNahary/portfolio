@@ -1,4 +1,4 @@
-#app-header {
+.dashboard-header {
     font-family: Arial, Helvetica, sans-serif;
     align-self: flex-start;
     padding: 10px;
@@ -14,7 +14,7 @@
     width: 100%;
 }
 
-#stocks {
+.stocks-form-section {
     width: 25%; 
     max-height: 100%; 
     overflow-y: auto; 
@@ -23,7 +23,7 @@
     box-sizing: border-box;
 }
 
-#results-container {
+.results-section {
     width: 75%;
 }
 
@@ -51,7 +51,6 @@ input{
     color: white;
     background-color: #3f51b5;
     border: 0ch;
-    /* transform: scale(1.5);   */
     cursor: pointer;
     border-radius: 10px;
 }

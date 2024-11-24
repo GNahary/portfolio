@@ -59,7 +59,6 @@
                     <button mat-raised-button color="primary" type="submit"
                         [disabled]="stocksForm.invalid">Submit</button>
                 </div>
-
             </form>
 
         </div>
@@ -67,10 +66,10 @@
 
         <div id="results-container">
             @if(this.data){
-                <app-stock-chart></app-stock-chart>
+            <app-stock-chart></app-stock-chart>
 
-                <app-statistics [totalAddedFunds]="this.totalAddedFunds"
-                [totalRetrievedFunds]="this.totalRetrievedFunds"></app-statistics>
+            <app-statistics [totalAddedFunds]="this.getTotalAddedFunds()"
+                [totalRetrievedFunds]="this.getTotalRetrievedFunds()"></app-statistics>
 
             }
 

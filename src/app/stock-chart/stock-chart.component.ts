@@ -47,8 +47,8 @@ export class StockChartComponent implements OnInit{
       }
     ],
     layout: {
-      width: window.innerWidth * 0.75,
-      height: window.innerHeight * 0.75,
+      width: window.innerWidth * 0.70,
+      height: window.innerHeight * 0.70,
       title: "",
     }
   }

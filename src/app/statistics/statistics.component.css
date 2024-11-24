@@ -5,12 +5,15 @@
 
 }
 
-
-.result-row {
+.result-row{
     display: flex;
     flex: 1;
     width: 100%;
     justify-content: center; 
-    align-items: center; 
+    align-items: center;
     gap: 10vw;   
+}
+
+h5{
+    margin: 1vh;
 }
